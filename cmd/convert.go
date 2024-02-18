@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/rgolangh/sonata-experiments/internal/backstage"
 	"github.com/rgolangh/sonata-experiments/internal/sonata"
@@ -60,6 +61,12 @@ var convertCmd = &cobra.Command{
 		// all the omitempty are not respected.
 		jdoc := make(map[string]interface{})
 		json.Unmarshal(j, &jdoc)
+
+		// add id and name under the root json, as those are missing from the sonata operator model
+		jdoc["id"] = strings.ReplaceAll(strings.ToLower(t.Metadata.Name), " ", "-")
+		jdoc["name"] = t.Metadata.Name
+		jdoc["description"] = t.Metadata.Description
+
 		marshal, err := yaml.Marshal(&jdoc)
 		if err != nil {
 			return fmt.Errorf("failed marshaling yaml%v", err)
