@@ -31,17 +31,20 @@ import (
 var convertCmd = &cobra.Command{
 	Use:   "convert [filename]",
 	Short: "convert from backstage template to sonataflow definition",
-	Long:  `Convert a backstage softare template to an orchestrator sonataflow json.`,
+	Long: `Convert a backstage softare template to an orchestrator sonataflow json.
+Pass [filename] or read from stdin`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		var file *os.File
 		if len(args) == 0 {
-			return fmt.Errorf("Supply a file name to parse")
+			// use stdin
+			file = os.Stdin
+		} else {
+			var err error
+			file, err = os.Open(args[0])
+			if err != nil {
+				return fmt.Errorf("Error:", err)
+			}
 		}
-
-		file, err := os.Open(args[0])
-		if err != nil {
-			return fmt.Errorf("Error:", err)
-		}
-		defer file.Close()
 
 		// Decode YAML into Template struct
 		var t backstage.Template
