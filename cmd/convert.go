@@ -30,7 +30,7 @@ import (
 var convertCmd = &cobra.Command{
 	Use:   "convert [filename]",
 	Short: "convert from backstage template to sonataflow definition",
-	Long: `Convert a backstage softare template to an orchestrator sonataflow json.`,
+	Long:  `Convert a backstage softare template to an orchestrator sonataflow json.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			return fmt.Errorf("Supply a file name to parse")
@@ -43,19 +43,29 @@ var convertCmd = &cobra.Command{
 		defer file.Close()
 
 		// Decode YAML into Template struct
-		var tmpl backstage.Template
+		var t backstage.Template
 		decoder := yaml.NewDecoder(file)
-		if err := decoder.Decode(&tmpl); err != nil {
+		if err := decoder.Decode(&t); err != nil {
 			return fmt.Errorf("Error:", err)
 		}
-		flow := sonata.NewFrom(tmpl)
+		flow := sonata.NewFrom(t)
 
 		j, err := json.Marshal(&flow)
 		if err != nil {
 			return fmt.Errorf("error when marshaling json %v\n", err)
 		}
-		fmt.Printf("%v\n", string(j))
-        return nil
+
+		// convert from json to yaml .The reason I dont marshal directly
+		// to yaml is because the struct tags on sonata types are json so
+		// all the omitempty are not respected.
+		jdoc := make(map[string]interface{})
+		json.Unmarshal(j, &jdoc)
+		marshal, err := yaml.Marshal(&jdoc)
+		if err != nil {
+			return fmt.Errorf("failed marshaling yaml%v", err)
+		}
+		fmt.Println(string(marshal))
+		return nil
 	},
 }
 
