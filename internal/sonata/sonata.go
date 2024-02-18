@@ -28,7 +28,7 @@ func NewFrom(template backstage.Template) v1alpha08.Flow {
 							FunctionRef: &model.FunctionRef{
 								RefName: "sysout",
 								Arguments: map[string]model.Object{
-									"message": model.Object{StrVal: "Error on workflow, triggering componesation"},
+									"message": model.FromString("Error on workflow, triggering componesation"),
 								},
 							},
 						},
