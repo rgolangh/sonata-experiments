@@ -33,7 +33,7 @@ type Step struct {
 	ID     string    `yaml:"id"`
 	Name   string    `yaml:"name"`
 	Action string    `yaml:"action"`
-	Input  StepInput `yaml:"input"`
+	Input  map[string]interface{} `yaml:"input"`
 }
 
 type Spec struct {
