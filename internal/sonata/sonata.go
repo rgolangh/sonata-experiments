@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/rgolangh/sonata-experiments/internal/backstage"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
-    "internal/backstage"
 )
 
-func newFrom(template backstage.Template) v1alpha08.Flow {
+func NewFrom(template backstage.Template) v1alpha08.Flow {
     flow := v1alpha08.Flow{
     	Start:           &model.Start{},
         Annotations:     []string{"parodos-dev/infrastructure"},

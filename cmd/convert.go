@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/rgolangh/sonata-experiments/internal/backstage"
+	"github.com/rgolangh/sonata-experiments/internal/sonata"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 )
@@ -46,7 +48,7 @@ var convertCmd = &cobra.Command{
 		if err := decoder.Decode(&tmpl); err != nil {
 			return fmt.Errorf("Error:", err)
 		}
-		flow := sonata.newFrom(tmpl)
+		flow := sonata.NewFrom(tmpl)
 
 		j, err := json.Marshal(&flow)
 		if err != nil {
